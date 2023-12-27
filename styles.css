@@ -1,0 +1,36 @@
+* {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --PrimaryColor: #FFF;
+    --SecondColor: #000;
+
+    --PrimaryFont: "sans-serif";
+    --SecondFont: "sans-serif";
+
+
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+}
+
+.MainContainer {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 2fr 1fr;
+}
+
+.TicTacToeContainer{
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+}

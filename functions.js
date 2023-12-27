@@ -1,121 +1,104 @@
-const Board = (function () {
-    gameBoard = [[".", ".", "."],
-    [".", ".", "."],
-    [".", ".", "."]];
-
-    moveQueue = [];
-
-    move = 1;
-
-    const getClearBoard = function () {
-        gameBoard = [[".", ".", "."],
-        [".", ".", "."],
-        [".", ".", "."]];
-    }
-
-    const getBoard = function () {
-        console.log(gameBoard);
-    }
-
-    const getPiece = function () {
-        return (move % 2 == 1) ? "X" : "O";
-    }
-
-    const horizontalWin = function (gamePiece) {
-        for (let x = 0; x < gameBoard.length; x++) {
-            let count = 0;
-            for (let y = 0; y < gameBoard[x].length; y++) {
-                if (gameBoard[x][y] === gamePiece) {
-                    count++;
-                }
-            }
-            if (count === 3) {
-                console.log("Win");
-                return true;
-            }
-        }
-        return false;
-    }
-
-    const verticalWin = function (gamePiece) {
-        for (let y = 0; y < gameBoard.length; y++) {
-            let count = 0;
-            for (let x = 0; x < gameBoard[y].length; x++) {
-                if (gameBoard[x][y] === gamePiece) {
-                    count++;
-                }
-            }
-            if (count === 3) {
-                console.log("Win");
-                return true;
-            }
-        }
-    }
-
-    const diagonalWin = function (gamePiece) {
-        let y = 2, countL = 0, countR = 0;
-        for (let x = 0; x < gameBoard.length; x++) {
-            if (gameBoard[x][x] === gamePiece) {
-                countL++;
-            }
-            if (gameBoard[x][y] === gamePiece) {
-                countR++;
-            }
-            y--;
-        }
-        if (countL === 3 || countR === 3) {
-            console.log("Win");
-            return true;
-        }
-        return false;
-    }
-
-    const setMove = function (x, y) {
-        if (move === 10) {
-            alert("Draw!");
-            getClearBoard();
-            return false;
-        }
-        let gamePiece = getPiece();
-        if (gameBoard[x][y] === ".") {
-            gameBoard[x][y] = gamePiece;
-            moveQueue.push(gamePiece);
-            if(diagonalWin(gamePiece) || horizontalWin(gamePiece) || verticalWin(gamePiece))
+//Board Class
+//Keep state of the board
+class Board{
+    #board;
+    constructor(size = 3)
+    {
+        this.#board = new Array();
+        for(let row = 0; row < size; row++)
+        {
+            this.#board.push(new Array);
+            for(let col = 0; col < size; col++)
             {
-                alert("Game over!");
-                getClearBoard();
-                return;
+                this.#board[row][col] = ".";
             }
-            move++;
-            return;
         }
-        alert("Not a valid move");
     }
-    return { getBoard, setMove, horizontalWin, verticalWin, diagonalWin };
+    getBoard() {return this.#board;}
 
-})();
+    setBoard(row, col, piece)
+    {
+        this.#board[row][col] = piece;
+    }
 
-const Player = function (playerName) {
-    const name = playerName;
-    return { name };
+    clearBoard(){
+        for(let row = 0; row < this.#board.length; row++)
+        {
+            //this.board.push(new Array);
+            for(let col = 0; col < this.#board[row].length; col++)
+            {
+                this.#board[row][col] = ".";
+            }
+        }
+    }
 }
 
-const player1 = Player("X");
+//Player Class
+class Player{
+    constructor(name, piece)
+    {
+        this.name = name;
+        this.piece = piece;
+    }
+}
+
+//Game Flow Class
+
+class GameFlow{
+
+    #turn = 0;
+    
+    constructor()
+    {
+    }
+
+    currentTurn(players) {
+        this.#turn++;
+        return players[this.#turn % 2];
+    }
+
+    horizontalWin(board)
+    {
+        for(let row = 0; row < board.length; row++)
+        {
+            let pieces = new Set(board[row]);
+            
+            if(pieces.size == 1 && !pieces.has("."))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    verticalWin(board)
+    {
+        for(let col = 0; col < board.length; col++)
+        {
+            let pieces = new Set();
+            for(let row = 0; row < board[col].length; row++)
+            {
+                pieces.add(board[row][col]);
+            }
+            if(pieces.size == 1 && !pieces.has(".")){return true;}
+        }
+        return false;
+    }
+    //Check for a win
+    //Reset game
+}
+
+// gamef.horizontalWin(board);
+
+//DOM Class
+//Render board
+//Event listener for square selection
 
 
-
-Board.setMove(0, 0);
-
-Board.setMove(0, 1);
-Board.setMove(0, 2);
-Board.setMove(1, 0);
-
-Board.setMove(1, 1);
-Board.setMove(1, 2);
-Board.setMove(2, 0);
-
-Board.setMove(2, 1);
-// Board.setMove(2, 2);
-
-Board.getBoard();
-
+/* Steps to play 
+1. Choose player and piece
+2. Start game
+3. Place piece by selecting grid spot
+4. Winner or draw
+5. Step 1.
+*/
