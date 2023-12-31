@@ -1,32 +1,26 @@
 //Board Class
 //Keep state of the board
-class Board{
+class Board {
     #board;
-    constructor(size = 3)
-    {
+    constructor(size = 3) {
         this.#board = new Array();
-        for(let row = 0; row < size; row++)
-        {
+        for (let row = 0; row < size; row++) {
             this.#board.push(new Array);
-            for(let col = 0; col < size; col++)
-            {
+            for (let col = 0; col < size; col++) {
                 this.#board[row][col] = ".";
             }
         }
     }
-    getBoard() {return this.#board;}
+    getBoard() { return this.#board; }
 
-    setBoard(row, col, piece)
-    {
+    setBoard(row, col, piece) {
         this.#board[row][col] = piece;
     }
 
-    clearBoard(){
-        for(let row = 0; row < this.#board.length; row++)
-        {
+    clearBoard() {
+        for (let row = 0; row < this.#board.length; row++) {
             //this.board.push(new Array);
-            for(let col = 0; col < this.#board[row].length; col++)
-            {
+            for (let col = 0; col < this.#board[row].length; col++) {
                 this.#board[row][col] = ".";
             }
         }
@@ -34,9 +28,8 @@ class Board{
 }
 
 //Player Class
-class Player{
-    constructor(name, piece)
-    {
+class Player {
+    constructor(name, piece) {
         this.name = name;
         this.piece = piece;
     }
@@ -44,12 +37,11 @@ class Player{
 
 //Game Flow Class
 
-class GameFlow{
+class GameFlow {
 
     #turn = 0;
-    
-    constructor()
-    {
+
+    constructor() {
     }
 
     currentTurn(players) {
@@ -57,30 +49,40 @@ class GameFlow{
         return players[this.#turn % 2];
     }
 
-    horizontalWin(board)
-    {
-        for(let row = 0; row < board.length; row++)
-        {
+    horizontalWin(board) {
+        for (let row = 0; row < board.length; row++) {
             let pieces = new Set(board[row]);
-            
-            if(pieces.size == 1 && !pieces.has("."))
-            {
+
+            if (pieces.size == 1 && !pieces.has(".")) {
                 return true;
             }
         }
         return false;
     }
 
-    verticalWin(board)
-    {
-        for(let col = 0; col < board.length; col++)
-        {
+    verticalWin(board) {
+        for (let col = 0; col < board.length; col++) {
             let pieces = new Set();
-            for(let row = 0; row < board[col].length; row++)
-            {
+            for (let row = 0; row < board[col].length; row++) {
                 pieces.add(board[row][col]);
             }
-            if(pieces.size == 1 && !pieces.has(".")){return true;}
+            if (pieces.size == 1 && !pieces.has(".")) { return true; }
+        }
+        return false;
+    }
+
+    diagonalWin(board) {
+        let pieces = new Set();
+        for (let row = 0; row < board.length; row++) {
+            pieces.add(board[row][row]);
+        }
+        if (pieces.size == 1 && !pieces.has(".")) { return true; }
+        else {
+            pieces = new Set();
+            for (let col = 0; col < board.length; col++) {
+                pieces.add(board[(board.length - col) - 1][col]);
+            }
+            if (pieces.size == 1 && !pieces.has(".")) { return true; }
         }
         return false;
     }
@@ -88,7 +90,17 @@ class GameFlow{
     //Reset game
 }
 
-// gamef.horizontalWin(board);
+let gamef = new GameFlow();
+let board = new Board();
+
+board.setBoard(2, 0, "X");
+board.setBoard(1, 1, "X");
+board.setBoard(0, 0, "X");
+
+console.log(board.getBoard());
+
+
+console.log(gamef.diagonalWin(board.getBoard()));
 
 //DOM Class
 //Render board
