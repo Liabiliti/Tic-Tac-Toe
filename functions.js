@@ -11,11 +11,34 @@ class Board {
             }
         }
     }
-    getBoard() { return this.#board; }
+
+    getBoard(){return this.#board};
+    printBoard() {
+        let boardString = "";
+        for (let row = 0; row < this.#board.length; row++) {
+            boardString += this.#board[row].toString() + "\n";
+            
+        }
+        return boardString;
+    }
+
+    possibleMove(row, col) {
+        if (row < this.#board.length && col < this.#board.length) {
+            if (row >= 0 && col >= 0) {
+                if (this.#board[row][col] == ".") {
+                    return true;
+                }
+            }
+        }
+        alert("Not in range");
+        return false;
+    }
 
     setBoard(row, col, piece) {
         this.#board[row][col] = piece;
     }
+
+
 
     clearBoard() {
         for (let row = 0; row < this.#board.length; row++) {
@@ -27,11 +50,13 @@ class Board {
     }
 }
 
+
 //Player Class
 class Player {
     constructor(name, piece) {
         this.name = name;
         this.piece = piece;
+        this.wins = 0;
     }
 }
 
@@ -39,17 +64,24 @@ class Player {
 
 class GameFlow {
 
-    #turn = 0;
+    #turn = 1;
 
-    constructor() {
-    }
-
-    currentTurn(players) {
+    changeTurn(players) {
         this.#turn++;
-        return players[this.#turn % 2];
+        return players[this.#turn % 2].piece;
     }
 
-    horizontalWin(board) {
+    checkWin(board) {
+        if (this.#horizontalWin(board) ||
+            this.#verticalWin(board) ||
+            this.#diagonalWin(board)) {
+
+            return true;
+        }
+        return false;
+    }
+
+    #horizontalWin(board) {
         for (let row = 0; row < board.length; row++) {
             let pieces = new Set(board[row]);
 
@@ -60,7 +92,7 @@ class GameFlow {
         return false;
     }
 
-    verticalWin(board) {
+    #verticalWin(board) {
         for (let col = 0; col < board.length; col++) {
             let pieces = new Set();
             for (let row = 0; row < board[col].length; row++) {
@@ -71,7 +103,7 @@ class GameFlow {
         return false;
     }
 
-    diagonalWin(board) {
+    #diagonalWin(board) {
         let pieces = new Set();
         for (let row = 0; row < board.length; row++) {
             pieces.add(board[row][row]);
@@ -90,21 +122,31 @@ class GameFlow {
     //Reset game
 }
 
-let gamef = new GameFlow();
 let board = new Board();
+let game = new GameFlow();
+let player1 = new Player("Nick", "X");
+let player2 = new Player("Clarissa", "O");
 
-board.setBoard(2, 0, "X");
-board.setBoard(1, 1, "X");
-board.setBoard(0, 0, "X");
-
-console.log(board.getBoard());
+let players = [player1, player2];
 
 
-console.log(gamef.diagonalWin(board.getBoard()));
+
+while(!game.checkWin(board.getBoard())) {
+    let row = prompt("Row: ");
+    let col = prompt("Col: ");
+    if (board.possibleMove(Number(row), Number(col))) {
+        board.setBoard(Number(row), Number(col), game.changeTurn(players));
+        alert(board.printBoard());
+    }
+} 
+
 
 //DOM Class
 //Render board
 //Event listener for square selection
+
+// class DOMManipulation {
+// }
 
 
 /* Steps to play 
@@ -114,3 +156,4 @@ console.log(gamef.diagonalWin(board.getBoard()));
 4. Winner or draw
 5. Step 1.
 */
+
