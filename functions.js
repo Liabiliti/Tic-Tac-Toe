@@ -60,15 +60,38 @@ class Player {
     }
 }
 
+class RandomPlayer extends Player
+{
+    constructor(piece)
+    {
+        super("Bot", piece);
+    }
+
+    getMove(board)
+    {
+        while(1)
+        {
+            let row = Math.floor(Math.random() * board.getBoard().length - 1) + 1;
+            let col = Math.floor(Math.random() * board.getBoard().length - 1) + 1;
+            if(board.possibleMove(row, col))
+            {
+                return [row, col];
+                
+            }
+            
+        }
+    }
+}
+
 //Game Flow Class
 
 class GameFlow {
 
-    #turn = 1;
+    #turn = 0;
 
-    changeTurn(players) {
+    changeTurn() {
         this.#turn++;
-        return players[this.#turn % 2].piece;
+        return this.#turn % 2;
     }
 
     checkWin(board) {
@@ -125,20 +148,33 @@ class GameFlow {
 let board = new Board();
 let game = new GameFlow();
 let player1 = new Player("Nick", "X");
-let player2 = new Player("Clarissa", "O");
+let player2 = new RandomPlayer("O");
 
 let players = [player1, player2];
-
+let currentPlayer = 0;
 
 
 while(!game.checkWin(board.getBoard())) {
-    let row = prompt("Row: ");
-    let col = prompt("Col: ");
+    let row, col;
+    alert(currentPlayer);
+    if(!(players[currentPlayer] instanceof RandomPlayer))
+    {
+        row = prompt("Row: ");
+        col = prompt("Col: ");
+    }
+    else{
+        [row, col] = players[currentPlayer].getMove(board);
+        
+    }
+    alert(row + " " + col + "\n");
+
     if (board.possibleMove(Number(row), Number(col))) {
-        board.setBoard(Number(row), Number(col), game.changeTurn(players));
+        board.setBoard(Number(row), Number(col), players[currentPlayer].piece);
+        currentPlayer = game.changeTurn();
         alert(board.printBoard());
     }
 } 
+
 
 
 //DOM Class
